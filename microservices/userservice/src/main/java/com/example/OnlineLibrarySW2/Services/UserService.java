@@ -58,8 +58,8 @@ public class UserService {
                 // Return 400 Bad Request for an invalid option
                 return ResponseEntity.badRequest().body("Invalid option provided");
         }
-        String authUrl = "http://localhost:8080/api/v1/users/Modify/"+option;
-        String reportUrl = "http://localhost:8081/api/v1/users/Modify/"+option;
+        String authUrl = "http://auth-service/api/v1/users/Modify/"+option;
+        String reportUrl = "http://report-service/api/v1/users/Modify/"+option;
 
         HttpEntity<modifyuserdto> requestEntity = new HttpEntity<>(userdto);
 

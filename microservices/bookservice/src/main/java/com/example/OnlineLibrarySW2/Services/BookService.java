@@ -32,7 +32,7 @@ public class BookService {
     }
 
     public void deleteBookByISBN(String ISBN) {
-        String completeUrl="://localhost:8082/api/v1/"+ISBN;
+        String completeUrl="http://report-service:8081/api/v1/"+ISBN;
         try {
             restTemplate.delete(completeUrl);
         } catch (RestClientException ignored) {
@@ -45,7 +45,7 @@ public class BookService {
     public void AddBook (Books book){
 
         try {
-           String reportservice = "http://localhost:8081/api/v1/book/add";
+           String reportservice = "http://report-service:8081/api/v1/book/add";
 
            restTemplate.postForEntity(reportservice, book, Void.class);
         } catch (Exception ignored) {
@@ -75,7 +75,7 @@ public class BookService {
         existingBook.setStockNumber(updatedBook.getStockNumber());
         HttpEntity<Books> requestEntity = new HttpEntity<>(updatedBook);
         try{
-            String reportservice = "http://localhost:8081/api/v1/book/update";
+            String reportservice = "http://report-service:8081/api/v1/book/update";
             ResponseEntity<String> reportResponse = restTemplate.exchange(reportservice, HttpMethod.PUT, requestEntity, String.class);
         }catch (RestClientException ignored) {
 
