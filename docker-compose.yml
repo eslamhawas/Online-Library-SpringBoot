@@ -1,0 +1,165 @@
+version: '3.8'
+
+services:
+
+  # react:
+  #   build: ./react
+  #   container_name: react_container
+  #   stdin_open: true
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./react:/app
+  #     - /app/node_modules
+
+  auth-service:
+    build:
+      context: ./microservices/authservice1/AuthMicroServiceWithDocker/authservice
+    container_name: auth-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - auth-service-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://auth-service-db:3306/OnlineLibraryAuth
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ''
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_APPLICATION_NAME: OnlineLibrary-SW2
+    volumes:
+      - auth-service-data:/var/lib/mysql
+
+  auth-service-db:
+    image: mysql:8.0
+    container_name: auth-service-db
+    ports:
+      - "3308:3306"
+    environment:
+      MYSQL_DATABASE: OnlineLibraryAuth
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    volumes:
+      - auth-service-db-data:/var/lib/mysql
+
+  book-service:
+    build:
+      context: ./microservices/bookservice
+    container_name: book-service
+    ports:
+      - "8082:8082"
+    depends_on:
+      - book-service-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://book-service-db:3306/OnlineLibraryBook
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ''
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_APPLICATION_NAME: OnlineLibrary-SW2
+    volumes:
+      - book-service-data:/var/lib/mysql
+
+  book-service-db:
+    image: mysql:8.0
+    container_name: book-service-db
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_DATABASE: OnlineLibraryBook
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    volumes:
+      - book-service-db-data:/var/lib/mysql
+
+  borrowed-books-service:
+    build:
+      context: ./microservices/borrowed-books-service1/borrowed-books-service
+    container_name: borrowed-books-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - borrowed-books-service-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://borrowed-books-service-db:3306/OnlineLibraryBorrowedBooks
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ''
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_APPLICATION_NAME: OnlineLibrary-SW2
+    volumes:
+      - borrowed-books-service-data:/var/lib/mysql
+
+  borrowed-books-service-db:
+    image: mysql:8.0
+    container_name: borrowed-books-service-db
+    ports:
+      - "3310:3306"
+    environment:
+      MYSQL_DATABASE: OnlineLibraryBorrowedBooks
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    volumes:
+      - borrowed-books-service-db-data:/var/lib/mysql
+
+  report-service:
+    build:
+      context: ./microservices/reportService/onlinelibrary
+    container_name: report-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - report-service-db
+    environment:
+      SPRING_DATASOURCE _URL: jdbc:mysql://report-service-db:3306/OnlineLibraryReport
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ''
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_APPLICATION_NAME: OnlineLibrary-SW2
+    volumes:
+      - report-service-data:/var/lib/mysql
+
+  report-service-db:
+    image: mysql:8.0
+    container_name: report-service-db
+    ports:
+      - "3311:3306"
+    environment:
+      MYSQL_DATABASE: OnlineLibraryReport
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    volumes:
+      - report-service-db-data:/var/lib/mysql
+
+  user-service:
+    build:
+      context: ./microservices/userservice
+    container_name: user-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - user-service-db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://user-service-db:3306/OnlineLibraryUser
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ''
+      SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver
+      SPRING_APPLICATION_NAME: OnlineLibrary-SW2
+    volumes:
+      - user-service-data:/var/lib/mysql
+
+  user-service-db:
+    image: mysql:8.0
+    container_name: user-service-db
+    ports:
+      - "3312:3306"
+    environment:
+      MYSQL_DATABASE: OnlineLibraryUser
+      MYSQL_ALLOW_EMPTY_PASSWORD: "true"
+    volumes:
+      - user-service-db-data:/var/lib/mysql
+
+volumes:
+  auth-service-data:
+  auth-service-db-data:
+  book-service-data:
+  book-service-db-data:
+  borrowed-books-service-data:
+  borrowed-books-service-db-data:
+  report-service-data:
+  report-service-db-data:
+  user-service-data:
+  user-service-db-data:
