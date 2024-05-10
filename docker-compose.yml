@@ -1,16 +1,23 @@
 version: '3.8'
 
 services:
+  client:
+    build: ./client
+    container_name: client_container
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/app
+      - /app/node_modules
 
-  # react:
-  #   build: ./react
-  #   container_name: react_container
-  #   stdin_open: true
-  #   ports:
-  #     - "3000:3000"
-  #   volumes:
-  #     - ./react:/app
-  #     - /app/node_modules
+  admin:
+    build: ./admin
+    container_name: admin_container
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./admin:/app
+      - /app/node_modules
 
   auth-service:
     build:
@@ -105,7 +112,7 @@ services:
     depends_on:
       - report-service-db
     environment:
-      SPRING_DATASOURCE _URL: jdbc:mysql://report-service-db:3306/OnlineLibraryReport
+      SPRING_DATASOURCE_URL: jdbc:mysql://report-service-db:3306/OnlineLibraryReport
       SPRING_DATASOURCE_USERNAME: root
       SPRING_DATASOURCE_PASSWORD: ''
       SPRING_DATASOURCE_DRIVER_CLASS_NAME: com.mysql.cj.jdbc.Driver

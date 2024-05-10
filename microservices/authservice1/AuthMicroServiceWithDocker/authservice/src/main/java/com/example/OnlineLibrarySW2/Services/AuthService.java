@@ -29,10 +29,10 @@ public class AuthService {
     public ResponseEntity<String> login(UserLoginDto user) {
         Optional<User> existingUser= _usersRepository.findByEmail(user.getEmail());
         if(existingUser.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There Is no User With this credntials");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There Is no User With this credentials");
         }
         if(!user.getPassword().equals(existingUser.get().getPassword())) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There Is no User With this credntials");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("There Is no User With this credentials");
         }
         User user2 = existingUser.get();
         return ResponseEntity.status(HttpStatus.OK).body(user2.getId()+"");
@@ -61,15 +61,25 @@ public class AuthService {
             user.setIsAdmin("false");
         }
         try{
-            String userservice = "http://user-service:8084/api/v1/Register";
+            // change localhost:8084 to user-service to be able
+            // to use RestTemplate Communication between services inside docker
+
+            String userservice = "http://localhost:8084/api/v1/Register";
 
             restTemplate.postForEntity(userservice, userRegisterDto, String.class);
 
-            String reportservice = "http://report-service-db:8081/api/v1/Register";
+        } catch (RestClientException e) {
+            System.out.println("Error adding user: " + e.getMessage());
+        }
+        try{
+            // change localhost:8081 to report-service to be able
+            // to use RestTemplate Communication between services inside docker
+
+            String reportservice = "http://localhost:8081/api/v1/Register";
 
             restTemplate.postForEntity(reportservice, userRegisterDto, String.class);
-        } catch (Exception ignored) {
-
+        } catch (RestClientException e) {
+            System.out.println("Error adding user: " + e.getMessage());
         }
 
 

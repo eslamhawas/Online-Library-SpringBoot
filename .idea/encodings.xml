@@ -3,8 +3,10 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/microservices/authservice1/AuthMicroServiceWithDocker/authservice/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/microservices/book-service/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservices/bookservice/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/microservices/borrowed-books-service1/borrowed-books-service/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/microservices/reportService/onlinelibrary-sw2-mariem/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/microservices/reportService/onlinelibrary/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/microservices/userservice/src/main/java" charset="UTF-8" />
   </component>
 </project>

@@ -1,9 +1,11 @@
 package com.example.OnlineLibrarySW2.Services;
 
+import com.example.OnlineLibrarySW2.Entity.BookDTO;
 import com.example.OnlineLibrarySW2.Entity.Books;
 import com.example.OnlineLibrarySW2.Repository.BooksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,30 +16,32 @@ import java.util.Optional;
 
 public class BookService {
     @Autowired
-    private BooksRepository repo;
+    private BooksRepository bookRepository;
 
 
-
-    public List<Books> getAllBooks() {
-        return repo.findAll();
+    public ResponseEntity<List<Books>> getAllBooks() {
+        List<Books> books = bookRepository.findAll();
+        return ResponseEntity.ok(books);
     }
 
-    public void deleteBookByISBN(String ISBN) {
-        repo.deleteById(ISBN);
+    public ResponseEntity<Books> addBook(BookDTO book) {
+        Books NewBooks= new Books();
+        NewBooks.setTitle(book.getTitle());
+        NewBooks.setCategory(book.getCategory());
+        NewBooks.setPrice(book.getPrice());
+        NewBooks.setRackNumber(book.getRackNumber());
+        NewBooks.setStockNumber(book.getStockNumber());
+        bookRepository.save(NewBooks);
+        return ResponseEntity.status(HttpStatus.CREATED).body(NewBooks);
     }
 
-    public void AddBook (Books book){
-        repo.save(book);
-    }
-    public HttpStatus updateBook(Books updatedBook) {
-        if (!isValid(updatedBook)) {
-            return HttpStatus.BAD_REQUEST;
-        }
+    public ResponseEntity<Books> updateBook(BookDTO updatedBook) {
 
-        Optional<Books> existingBookOptional = repo.findById(updatedBook.getISBN());
+
+        Optional<Books> existingBookOptional = bookRepository.findById(updatedBook.getIsbn());
 
         if (existingBookOptional.isEmpty()) {
-            return HttpStatus.NOT_FOUND;
+            return ResponseEntity.notFound().build();
         }
 
         Books existingBook = existingBookOptional.get();
@@ -47,13 +51,14 @@ public class BookService {
         existingBook.setPrice(updatedBook.getPrice());
         existingBook.setStockNumber(updatedBook.getStockNumber());
 
-        repo.save(existingBook);
+        bookRepository.save(existingBook);
 
-        return HttpStatus.OK;
+        return ResponseEntity.status(HttpStatus.OK).body(existingBook);
+
     }
-    private boolean isValid(Books book) {
-        // You can add your validation logic here
-        return book != null;
+
+    public void deleteBookByISBN(String ISBN) {
+        bookRepository.deleteById(ISBN);
     }
 
 }

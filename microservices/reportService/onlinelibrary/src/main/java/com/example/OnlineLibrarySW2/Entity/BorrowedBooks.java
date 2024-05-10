@@ -1,13 +1,12 @@
 package com.example.OnlineLibrarySW2.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
-import com.example.OnlineLibrarySW2.Entity.Books;
+
 import java.time.LocalDate;
-import java.util.Date;
+
 
 
 @Entity

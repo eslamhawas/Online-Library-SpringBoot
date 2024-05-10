@@ -6,5 +6,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 class OnlineLibrarySw2ApplicationTests {
 
+	@Test
+	void contextLoads() {
+	}
 
 }

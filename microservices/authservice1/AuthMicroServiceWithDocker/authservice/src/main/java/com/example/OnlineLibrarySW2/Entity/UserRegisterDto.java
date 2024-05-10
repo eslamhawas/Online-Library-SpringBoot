@@ -1,10 +1,5 @@
 package com.example.OnlineLibrarySW2.Entity;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import java.util.Date;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 

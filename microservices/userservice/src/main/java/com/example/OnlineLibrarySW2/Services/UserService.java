@@ -2,13 +2,13 @@ package com.example.OnlineLibrarySW2.Services;
 
 import com.example.OnlineLibrarySW2.Entity.User;
 import com.example.OnlineLibrarySW2.Entity.modifyuserdto;
+import com.example.OnlineLibrarySW2.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import com.example.OnlineLibrarySW2.Repository.UserRepository;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.HashMap;
@@ -58,23 +58,28 @@ public class UserService {
                 // Return 400 Bad Request for an invalid option
                 return ResponseEntity.badRequest().body("Invalid option provided");
         }
-        String authUrl = "http://auth-service/api/v1/users/Modify/"+option;
-        String reportUrl = "http://report-service/api/v1/users/Modify/"+option;
+        // change localhost:8080 to auth-service to be able
+        // to use RestTemplate Communication between services inside docker
+        String authUrl = "http://localhost:8080/api/v1/users/Modify/"+option;
+        // change localhost:8081 to report-service to be able
+        // to use RestTemplate Communication between services inside docker
+        String reportUrl = "http://localhost:8081/api/v1/users/Modify/"+option;
 
         HttpEntity<modifyuserdto> requestEntity = new HttpEntity<>(userdto);
 
         try {
             ResponseEntity<String> authResponse = restTemplate.exchange(authUrl, HttpMethod.PUT, requestEntity, String.class);
+        } catch (RestClientException e) {
+            System.out.println("Error Modifying user: " + e.getMessage());
+        }
+        try {
             ResponseEntity<String> reportResponse = restTemplate.exchange(reportUrl, HttpMethod.PUT, requestEntity, String.class);
-        } catch (Exception ignored) {
-
+        } catch (RestClientException e) {
+            System.out.println("Error Modifying user: " + e.getMessage());
         }
 
-
-        // Save the modified user back to the repository
         userRepository.save(user);
 
-        // Return 200 OK response indicating the operation was successful
         return ResponseEntity.ok("User modified successfully");
     }
 

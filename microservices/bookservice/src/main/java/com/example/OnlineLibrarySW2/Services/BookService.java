@@ -1,4 +1,5 @@
 package com.example.OnlineLibrarySW2.Services;
+import com.example.OnlineLibrarySW2.BookDTO;
 import com.example.OnlineLibrarySW2.Books;
 import com.example.OnlineLibrarySW2.Repository.BooksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 public class BookService {
     @Autowired
-    private BooksRepository repo;
+    private BooksRepository bookRepository;
 
     private final RestTemplate restTemplate;
 
@@ -27,44 +28,40 @@ public class BookService {
     }
 
 
-    public List<Books> getAllBooks() {
-        return repo.findAll();
+    public ResponseEntity<List<Books>> getAllBooks() {
+        List<Books> books = bookRepository.findAll();
+        return ResponseEntity.ok(books);
     }
 
-    public void deleteBookByISBN(String ISBN) {
-        String completeUrl="http://report-service:8081/api/v1/"+ISBN;
+    public ResponseEntity<Books> addBook(BookDTO book) {
+        Books NewBooks= new Books();
+        NewBooks.setTitle(book.getTitle());
+        NewBooks.setCategory(book.getCategory());
+        NewBooks.setPrice(book.getPrice());
+        NewBooks.setRackNumber(book.getRackNumber());
+        NewBooks.setStockNumber(book.getStockNumber());
         try {
-            restTemplate.delete(completeUrl);
-        } catch (RestClientException ignored) {
 
+            // change to localhost to report-service to be able
+            // to use RestTemplate Communication between services inside docker
+
+            String reportservice = "http://localhost:8081/api/v1/Book";
+
+            restTemplate.postForEntity(reportservice, book, Books.class);
+        } catch (RestClientException e) {
+            System.out.println("Error Adding book: " + e.getMessage());
         }
-
-        repo.deleteById(ISBN);
+        bookRepository.save(NewBooks);
+        return ResponseEntity.status(HttpStatus.CREATED).body(NewBooks);
     }
 
-    public void AddBook (Books book){
-
-        try {
-           String reportservice = "http://report-service:8081/api/v1/book/add";
-
-           restTemplate.postForEntity(reportservice, book, Void.class);
-        } catch (Exception ignored) {
-
-        }
-
-        repo.save(book);
-    }
+    public ResponseEntity<Books> updateBook(BookDTO updatedBook) {
 
 
-    public HttpStatus updateBook(Books updatedBook) {
-        if (!isValid(updatedBook)) {
-            return HttpStatus.BAD_REQUEST;
-        }
-
-        Optional<Books> existingBookOptional = repo.findById(updatedBook.getISBN());
+        Optional<Books> existingBookOptional = bookRepository.findById(updatedBook.getIsbn());
 
         if (existingBookOptional.isEmpty()) {
-            return HttpStatus.NOT_FOUND;
+            return ResponseEntity.notFound().build();
         }
 
         Books existingBook = existingBookOptional.get();
@@ -73,22 +70,36 @@ public class BookService {
         existingBook.setCategory(updatedBook.getCategory());
         existingBook.setPrice(updatedBook.getPrice());
         existingBook.setStockNumber(updatedBook.getStockNumber());
-        HttpEntity<Books> requestEntity = new HttpEntity<>(updatedBook);
-        try{
-            String reportservice = "http://report-service:8081/api/v1/book/update";
-            ResponseEntity<String> reportResponse = restTemplate.exchange(reportservice, HttpMethod.PUT, requestEntity, String.class);
-        }catch (RestClientException ignored) {
+        HttpEntity<BookDTO> requestEntity = new HttpEntity<>(updatedBook);
 
+        try {
+            // change to localhost to report-service to be able
+            // to use RestTemplate Communication between services inside docker
+
+            String reportservice = "http://localhost:8081/api/v1/Book/update";
+            ResponseEntity<String> reportResponse = restTemplate.exchange(reportservice, HttpMethod.PUT, requestEntity, String.class);
+        } catch (RestClientException e) {
+            System.out.println("Error Editing book: " + e.getMessage());
         }
 
+        bookRepository.save(existingBook);
 
-        repo.save(existingBook);
+        return ResponseEntity.status(HttpStatus.OK).body(existingBook);
 
-        return HttpStatus.OK;
     }
-    private boolean isValid(Books book) {
-        // You can add your validation logic here
-        return book != null;
+
+    public void deleteBookByISBN(String ISBN) {
+        // change to localhost to report-service to be able
+        // to use RestTemplate Communication between services inside docker
+
+        String reportService = "http://localhost:8081/api/v1/Book/"+ISBN;
+        try {
+            restTemplate.delete(reportService);
+            System.out.println("Resource deleted successfully!");
+        } catch (RestClientException e) {
+            System.out.println("Error deleting book: " + e.getMessage());
+        }
+        bookRepository.deleteById(ISBN);
     }
 
 }

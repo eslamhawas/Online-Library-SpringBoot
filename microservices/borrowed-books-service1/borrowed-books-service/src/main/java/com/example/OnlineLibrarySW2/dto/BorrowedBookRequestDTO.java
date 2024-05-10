@@ -6,7 +6,9 @@ import lombok.Data;
 public class BorrowedBookRequestDTO {
     private String bookIsbn;
     private Long userId;
-
+    private String title;
+    private int price;
+    private String userName;
     public BorrowedBookRequestDTO() {
     }
 
@@ -15,27 +17,4 @@ public class BorrowedBookRequestDTO {
         this.userId = userId;
     }
 
-    public String getBookIsbn() {
-        return bookIsbn;
-    }
-
-    public void setBookIsbn(String bookIsbn) {
-        this.bookIsbn = bookIsbn;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    @Override
-    public String toString() {
-        return "BorrowedBookRequestDTO{" +
-                "bookISBN='" + bookIsbn + '\'' +
-                ", userId=" + userId +
-                '}';
-    }
 }

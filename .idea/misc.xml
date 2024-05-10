@@ -9,6 +9,8 @@
         <option value="$PROJECT_DIR$/microservices/book-service/pom.xml" />
         <option value="$PROJECT_DIR$/microservices/reportService/onlinelibrary-sw2-mariem/pom.xml" />
         <option value="$PROJECT_DIR$/microservices/borrowed-books-service1/borrowed-books-service/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/reportService/onlinelibrary/pom.xml" />
+        <option value="$PROJECT_DIR$/microservices/bookservice/pom.xml" />
       </list>
     </option>
   </component>
