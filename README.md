@@ -30,6 +30,7 @@ The project consists of the following microservices:
 - **Maven 3.x**
 - **MySQL 8.x**
 - **Docker**
+- **NodeJs**
 
 
 ### 1. Clone the repository
@@ -38,9 +39,10 @@ The project consists of the following microservices:
 git clone https://github.com/eslamhawas/online-library-system.git
 cd online-library-system
 ```
-### 2. Run the docker-compose file 
+### 2. Run the project 
 
 ```bash
+npm -i
 docker-compose up -d
 ```
 
